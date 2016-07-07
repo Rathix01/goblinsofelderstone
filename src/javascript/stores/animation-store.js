@@ -1,21 +1,13 @@
-var Bacon = require('baconjs');
-var R = require('ramda');
-var StateStore =  require('./state-store');
-var Q = require('q');
+const Bacon = require('baconjs');
+const R = require('ramda');
+const StateStore =  require('./state-store');
+const Q = require('q');
 
-var update = ( self ) => { 
-	StateStore.publish( self.target.id, self.target )
-}
+const update = ( self ) => StateStore.publish( self.target.id, self.target );
+const tweenTo = ( tween, tweenTarget ) => R.merge( tween.to, { onUpdate: update, onUpdateParams: [ "{self}" ] } );
+const getTweenTarget = ( tweenProps ) => R.clone( tweenProps );
 
-function tweenTo( tween, tweenTarget ) {
-	return R.merge( tween.to, { onUpdate: update, onUpdateParams: [ "{self}" ] } );
-}
-
-function getTweenTarget( tweenProps ) {
-	return R.clone( tweenProps );
-}
-
-function addTween( timeline, tween ) {
+const addTween = ( timeline, tween ) => {
 	
 	switch( tween.fn ) {
 		case "fromTo": 
@@ -28,7 +20,7 @@ function addTween( timeline, tween ) {
 	}
 }
 
-function toTimeline( tweenData ) {
+const toTimeline = ( tweenData ) => {
 	var d = Q.defer();
 	var tl = new TimelineMax({ paused: true, onComplete: ( args ) => d.resolve() })
 	tweenData.tweenProps.forEach( addTween.bind( this, tl ) );
@@ -36,11 +28,6 @@ function toTimeline( tweenData ) {
 	return Bacon.fromPromise( d.promise );
 }
 
-const getExitTweens = ( template ) => R.filter( ( tween ) => tween.step === template.navState.prev && tween.type === "exit",  template.tweenData );
-const getEntryTweens = ( template ) => R.filter( ( tween ) => tween.step === template.navState.step && tween.type === "entry", template.tweenData );
-const getAnimations = ( template ) =>  ({ tweenProps: getExitTweens( template ).concat( getEntryTweens( template ) ) })
-
 module.exports = {
-	toTimeline: toTimeline,
-	getAnimations: getAnimations
+	toTimeline: toTimeline
 }

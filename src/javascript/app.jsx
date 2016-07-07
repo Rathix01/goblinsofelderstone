@@ -15,7 +15,7 @@ function redraw( state ) {
 
   React.render(
     <Main></Main>,
-    document.getElementById('game')
+    document.getElementById('lost-goblin-app')
   )
 }
 
