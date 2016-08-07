@@ -21,7 +21,7 @@ module.exports = React.createClass({
   render() {
     return (
       <div className='footer'>
-        <img src='images/LG_Logo.png' className='lost-goblin-logo' />
+        <a href="http://www.lostgoblin.com"><img src='images/LG_Logo.png' className='lost-goblin-logo' /></a>
         <SocialMediaIcons id='SocialMediaIcons' />
         <div className='disclaimer'>
           { String.fromCharCode(169) } { this.getCurrentYear() } Goblins of Elderstone | All Rights Reserved
